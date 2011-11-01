@@ -1,62 +1,8 @@
-DOCUMENTATION:
+### flex source cleaner
 
+This is an old project that has become useful again, however it only supports flex 3 right now.
+Also I've more recently been using a gem: [flex-source-inspector](https://github.com/edeustace/flex-source-inspector) for this
+as it can be used programmatically.
 
-
-http://code.google.com/p/it-depends/wiki/UsingItDepends
-
-
-
-BUILD:
-
-
-
-Use FlexBuilder 3 for now.  An Ant file will be made available shortly.
-
-
-
-
-
-LICENSE:
-
-
-
-Copyright (c) 2008 Allurent, Inc.
-
-
-
-Permission is hereby granted, free of charge, to any person
-
-obtaining a copy of this software and associated documentation
-
-files (the "Software"), to deal in the Software without restriction,
-
-including without limitation the rights to use, copy, modify,
-
-merge, publish, distribute, sublicense, and/or sell copies of the
-
-Software, and to permit persons to whom the Software is furnished
-
-to do so, subject to the following conditions:
-
-
-
-The above copyright notice and this permission notice shall be
-
-included in all copies or substantial portions of the Software.
-
-
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+### original
+The original code was based on it depends: http://code.google.com/p/it-depends/wiki/UsingItDepends from Joe Berkowitz.
