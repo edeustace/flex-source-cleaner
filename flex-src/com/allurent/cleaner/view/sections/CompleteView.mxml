@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	width="100%"
+	height="100%"
+	verticalAlign="middle"
+	horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import com.allurent.cleaner.model.presentation.sections.CompletePM;
+			
+			[DefaultProperty("completePM")]
+			[Bindable] public var completePM : CompletePM;
+		]]>
+	</mx:Script>
+	
+			<mx:Label 
+				text="Cleaning complete moved the following files..."/>
+			<mx:List
+				width="100%"
+				height="100%"
+				dataProvider="{ completePM.cleaner.movedFiles }"
+				labelField="nativePath"/>
+		
+</mx:VBox>

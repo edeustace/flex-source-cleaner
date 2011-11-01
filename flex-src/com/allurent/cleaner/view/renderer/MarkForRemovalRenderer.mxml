@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+    paddingLeft="4"
+    horizontalAlign="center">
+    <mx:CheckBox 
+    	id="cbFollowUp" 
+    	selected="{ data.markedForRemoval }"
+    	click="data.markedForRemoval = cbFollowUp.selected"
+        buttonMode="true" 
+        useHandCursor="true"/>
+</mx:VBox>

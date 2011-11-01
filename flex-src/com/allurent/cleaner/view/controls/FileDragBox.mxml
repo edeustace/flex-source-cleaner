@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()"
+	direction="horizontal"
+	minWidth="60"
+	horizontalGap="2"
+	cornerRadius="9"
+	borderStyle="solid"
+	borderThickness="0"
+	paddingLeft="5" paddingRight="5"
+	verticalAlign="middle">
+	<mx:Metadata>
+		[Event(name="fileChoose", type="mx.events.FileEvent")]
+		[Event(name="removeFile", type="flash.events.Event")]
+	</mx:Metadata>
+	<mx:Script>
+	<![CDATA[
+		import mx.events.FileEvent;
+		import mx.managers.DragManager;
+		
+		private static const EMPTY_COLOR : String = "#EFEAEA"; 
+		private static const EMPTY_OVER_COLOR : String = "#DBDDD9"; 
+		private static const FULL_COLOR : String = "#FFFFFF"; 
+		private static const FULL_OVER_COLOR : String = "#65FF83"; 
+		private static const FULL_OVER_COLOR2 : String = "#4CB389"; 
+		
+		private var isOver : Boolean;
+		
+      	private var _file : File;
+		
+		public function set file( value : File ) : void
+		{
+			_file = value;
+			updateBackgroundColor();
+		}
+		
+		[Bindable]
+		public function get file() : File
+		{
+			return _file;
+		}
+		
+		[Embed(source="assets/cleaner/icons/folderIcon.png")]
+		[Bindable]
+		private var folderIcon : Class;
+			
+		public function init():void 
+		{
+			setBackgroundColor( EMPTY_COLOR );
+			addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, nativeDragEnter);
+	        addEventListener(NativeDragEvent.NATIVE_DRAG_DROP, nativeDragDrop);
+	        addEventListener(NativeDragEvent.NATIVE_DRAG_EXIT, handleDragOut );
+	        addEventListener(MouseEvent.MOUSE_OUT, handleDragOut );
+	    }
+	    
+	    private function setBackgroundColor( color : String ) : void
+	    {
+      		this.setStyle("backgroundColor", color );
+	    }
+	    
+		public function nativeDragEnter(e:NativeDragEvent):void 
+		{
+      		DragManager.acceptDragDrop( this );
+      		isOver = true;
+      		updateBackgroundColor();
+      	}
+      	
+      	private function updateBackgroundColor() : void
+      	{
+			var color : String;
+      		
+      		if( isOver )
+      		{
+      			color = file == null ? EMPTY_OVER_COLOR : FULL_OVER_COLOR;
+      			setBackgroundColor( color );
+      		}
+      		else
+      		{
+      			color = file == null ? EMPTY_COLOR : FULL_COLOR;
+      			setBackgroundColor( color );
+      		}
+      	}
+
+		public function nativeDragDrop(e:NativeDragEvent):void 
+		{
+			var arr:Array = e.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;
+	
+			var f:File = File(arr[0]);
+			
+			var event : FileEvent = new FileEvent( FileEvent.FILE_CHOOSE );
+			event.file = f;
+			
+			dispatchEvent( event );
+			
+			isOver = false;
+			updateBackgroundColor();
+      	}
+      	
+      	private function handleDragOut( event : Event ) : void
+      	{
+      		isOver = false;
+      		updateBackgroundColor();
+      	}
+      	
+      	private function removeFile() : void
+      	{
+      		dispatchEvent( new Event( "removeFile" ) );
+      		isOver = false;
+      		updateBackgroundColor();
+      	}
+      	
+      
+    
+	]]>
+	</mx:Script>	
+	<!--<mx:Image source="{ folderIcon }" />-->
+	<mx:Label text="{ file == null ? 'drag your file here' : file.name }" />
+	<mx:Button 
+		styleName="removeButton"
+		visible="{ file != null }"
+		includeInLayout="{ file != null }"
+		click="removeFile()"
+		/>
+</mx:Box>

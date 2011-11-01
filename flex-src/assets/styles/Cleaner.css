@@ -1,0 +1,45 @@
+/* CSS file */
+
+
+
+.cleanerView
+{
+	background-color: #ffffff;
+}
+
+.pageTitle
+{
+	font-size: 20px;
+}
+
+.stepHeader,
+.sectionHeader
+{
+	font-size: 16px;
+}
+
+.sectionHeader
+{
+	font-weight: bold;
+}
+.subSection
+{
+	font-size: 14px;
+}
+
+.addButton
+{
+	up-skin: Embed("../cleaner/icons/add.png");
+	down-skin: Embed("../cleaner/icons/add_down.png");
+	over-skin: Embed("../cleaner/icons/add_over.png");
+	disabled-skin: Embed("../cleaner/icons/add_disabled.png");
+}
+
+
+.removeButton
+{
+	up-skin: Embed("../cleaner/icons/remove.png");
+	down-skin: Embed("../cleaner/icons/remove_down.png");
+	over-skin: Embed("../cleaner/icons/remove_over.png");
+	disabled-skin: Embed("../cleaner/icons/remove_disabled.png");
+}

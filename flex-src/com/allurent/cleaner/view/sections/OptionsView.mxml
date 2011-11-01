@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="100%" height="100%" xmlns:controls="com.allurent.cleaner.view.controls.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FileEvent;
+			import mx.managers.DragManager;
+			import mx.controls.Alert;
+			import com.allurent.cleaner.model.domain.FlexApplication;
+			import com.allurent.cleaner.model.presentation.sections.OptionsPM;
+			
+			[DefaultProperty("optionsPM")]		
+			[Bindable] public var optionsPM : OptionsPM;
+			
+			private static const LABEL_WIDTH : int = 140;
+			
+			public function set showBadLinkReportError( value : Boolean ) : void
+			{
+				if( value )
+				{
+					Alert.show("this is the wrong link-report for this application, try again!", "oops", 0, this, okFunction );
+				}
+			}
+			
+			public function okFunction( event : Event ) : void
+			{
+				optionsPM.showBadLinkReportError = false;
+			}
+			
+			public function flexProjectFolderSelected(e:Event):void
+	        {
+	            optionsPM.flexProjectFolderSelected( e.target as File );
+			}
+			
+			public function linkReportDropped( appModel : FlexApplication, file : File ) : void
+			{
+				optionsPM.currentModel = appModel;
+				optionsPM.linkReportSelected( file );
+			}
+	        
+	        public function linkReportSelected( event : Event ) : void
+	        {
+	        	var selectedReport : File = event.target as File;
+	            optionsPM.linkReportSelected( selectedReport );
+			}
+			
+			private function ignoreThisApplication( applicationModel : FlexApplication, ignore : Boolean ) : void
+			{
+				optionsPM.ignoreThisApplication( applicationModel, ignore );
+			}
+			
+			private function chooseOtherApplication() : void
+			{
+				var otherApplication : File = new File();
+				otherApplication.addEventListener( Event.SELECT, otherApplicationChosen );
+				var mxmlFilter : FileFilter = new FileFilter("Text", "*.mxml");
+				otherApplication.browseForOpen("Choose the mx:Application to add..",  [ mxmlFilter ] )
+			}
+			
+			private function otherApplicationChosen( event : Event ) : void
+			{
+				optionsPM.cleaner.manuallyAddApplication( event.target as File );
+			}
+			
+			private function addFoldersToIgnore() : void
+			{
+				var folderToIgnore : File = new File();
+				folderToIgnore.resolvePath( optionsPM.cleaner.projectFolder.nativePath );
+				
+				folderToIgnore.addEventListener( Event.SELECT, folderToIgnoreChosen );
+				folderToIgnore.browseForDirectory("Choose folders to ignore" );
+			}
+			
+			private function folderToIgnoreChosen( event : Event ) : void
+			{
+				optionsPM.cleaner.addFolderToIgnore( event.target as File );
+			}
+			
+			private function handleSetFile( event : FileEvent ) : void
+			{
+				optionsPM.flexProjectFolderSelected( event.file );
+			}
+			
+			private function handleRemoveFile( event : Event ) : void
+			{
+				optionsPM.cleaner.projectFolder = null;
+			}
+			
+			private function removeLinkReport( appModel : FlexApplication ) : void
+			{
+				optionsPM.removeLinkReport( appModel );
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Binding 
+		source="{ optionsPM.showBadLinkReportError }" 
+		destination="showBadLinkReportError"/>
+	
+	<mx:HBox>
+ 		<mx:Label 
+			text="Project:" />
+		<controls:FileDragBox
+			file="{ optionsPM.cleaner.projectFolder }" 
+			removeFile="handleRemoveFile( event )"
+			fileChoose="handleSetFile( event )"/>
+	</mx:HBox>	
+	
+	<mx:VBox
+		width="100%"
+		visible="{ optionsPM.cleaner.projectFolder != null }">
+		
+		<mx:HBox
+			verticalAlign="middle"
+			width="100%">
+			
+			<mx:Label 
+				styleName="subSection"
+				text="Applications"/>	
+
+			<mx:Spacer width="100%" />
+
+			<mx:Label
+				text="add another application" />
+			<mx:Button
+				styleName="addButton"
+				click="chooseOtherApplication()"/>
+		</mx:HBox>
+	
+		<mx:HRule
+			width="100%" />
+		<mx:HBox>	
+			<mx:Label
+				width="40"
+				text="ignore"/>
+			<mx:Label 
+				width="{ LABEL_WIDTH }"
+				text="name"/>
+			<mx:Label
+				width="{ LABEL_WIDTH }"
+				text="Link Reports" />
+			<mx:Spacer
+				width="100%"/>
+			
+		</mx:HBox>
+		
+		<mx:Repeater 
+			id="applicationsRepeater"
+			dataProvider="{ optionsPM.cleaner.actionscriptProperties.applications }">
+			<mx:HBox>
+				<mx:CheckBox
+					width="40"
+					click="ignoreThisApplication( FlexApplication( event.currentTarget.getRepeaterItem() ), event.currentTarget.selected )"/>
+				<mx:Label
+					width="{ LABEL_WIDTH }"
+					text="{ applicationsRepeater.currentItem.name }" />
+				<controls:FileDragBox
+					file="{ FlexApplication( applicationsRepeater.currentItem ).linkReport }"
+					fileChoose="linkReportDropped( FlexApplication( event.currentTarget.getRepeaterItem() ),  event.file )"
+					removeFile="removeLinkReport( FlexApplication( event.currentTarget.getRepeaterItem() ) )" />
+			</mx:HBox>
+		</mx:Repeater> 
+	</mx:VBox>	
+	
+	<mx:Spacer 
+		height="10" />
+	<mx:VBox 
+		visible="{ optionsPM.cleaner.projectFolder != null }"
+		width="100%">
+		
+		<mx:HBox
+			verticalAlign="middle">
+			
+			<mx:Label 
+				styleName="subSection"
+				text="Packages to ignore"/>
+			
+			<mx:Button 
+				click="addFoldersToIgnore()"
+				styleName="addButton"/>
+			
+		</mx:HBox>
+		
+		<mx:List 
+			width="100%"
+			rowCount="4"
+			dataProvider="{ optionsPM.cleaner.foldersToIgnore }"
+			labelField="nativePath"/>		
+	
+	
+		<mx:Spacer
+			height="10" />
+			
+		<mx:Label 
+			styleName="subSection"
+			text="Select folder to move unused classes to" />
+		
+		<mx:HRule
+			width="100%" />
+		<mx:HBox 
+			width="100%">
+			<mx:Label text="move location: " />
+			<controls:FileDragBox
+				file="{ optionsPM.cleaner.moveDirectory }"
+				fileChoose="optionsPM.setMoveLocation( event.file )"
+				removeFile="optionsPM.clearMoveLocation()" />
+		</mx:HBox>
+		
+	</mx:VBox>
+				
+</mx:VBox>
